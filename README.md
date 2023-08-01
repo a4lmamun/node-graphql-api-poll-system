@@ -1,0 +1,1 @@
+Simple Poll System GraphQL API along with image uploading.

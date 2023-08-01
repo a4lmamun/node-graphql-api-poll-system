@@ -1,0 +1,41 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Poll {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  question  String
+  options   Option[]
+  votes     Vote[]
+  startDate DateTime
+  endDate   DateTime
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Option {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  text   String
+  pollId String @db.ObjectId
+  Vote   Vote[]
+
+  poll Poll @relation(fields: [pollId], references: [id])
+}
+
+model Vote {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  pollId   String @db.ObjectId
+  optionId String @db.ObjectId
+
+  poll   Poll   @relation(fields: [pollId], references: [id])
+  option Option @relation(fields: [optionId], references: [id])
+}
